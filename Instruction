@@ -1,19 +1,11 @@
 Algorithm 1: The Proactive Detection Strategy-Operations
-1. Input: x0, yk , C
+1. Input: x_0, y_k, C
 2. For k = 1 : N
-Calculate: y′
-k , yM
-k according to (6) and (7), respectively
-¯
-yk can be obtained by the f(·) and MT remover
-ˆ
-xk according to (5)
-ra
-k = ¯ yk−Cˆ
-xk
-If ∥ra
-k ∥ ≤¯
-r
+Calculate: y′_k, y^M_k according to (6) and (7) which are Nonlinear transformation and Moving target, respectively
+y(bar)k can be obtained by the f(·) and MT remover formulas
+x(hat)_k according to state observer formula
+r^a_k = y(bar)_k−Cx(bar)_k
+If ∥r^a_k∥ ≤r(bar)
 flag = 0(Attack-free)
 else
 flag = 1(Attacked)
