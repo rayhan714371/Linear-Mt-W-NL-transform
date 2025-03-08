@@ -96,7 +96,7 @@ xlabel('Time (s)', 'FontSize', 10);
 ylabel('Position (m)', 'FontSize', 10);
 legend('P_x', 'P_y', 'Location', 'northeast');
 grid on;
-xlim([0 0.5]);
+xlim([0 1]);
 
 % 2. Estimation Error (Px)
 subplot(3,1,2);
@@ -105,7 +105,7 @@ title('Estimation Error (P_x)', 'FontSize', 12);
 xlabel('Time (s)', 'FontSize', 10);
 ylabel('Error (m)', 'FontSize', 10);
 grid on;
-xlim([0 0.5]);
+xlim([0 1]);
 
 % 3. Attack Detection Flag
 subplot(3,1,3);
@@ -117,4 +117,4 @@ ylim([-0.1 1.5]);
 yticks([0 1]);
 yticklabels({'No Attack', 'Attack'});
 grid on;
-xlim([0 0.5]);
+xlim([0 1]);
