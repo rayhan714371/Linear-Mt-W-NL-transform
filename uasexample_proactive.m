@@ -22,9 +22,9 @@ x = x0;                    % True state
 x_hat = zeros(4,1);        % Estimated state
 
 % Simulation parameters
-N = 50;                    % Simulation steps (0.5 seconds)
-dt = 0.01;                 % Sampling time
-time = (0:N-1)*dt;         % Time vector
+N = 10000;                    % Simulation steps (100 seconds)
+dt = 0.01;                    % Sampling time
+time = (0:N-1)*dt;            % Time vector
 
 % Preallocate variables
 e_history = zeros(4,N);    % Estimation error history
@@ -50,8 +50,8 @@ for k = 1:N
     v = epsilon*randn(4,1);        % Measurement noise (||v|| ≤ ε)
     y = C*x + v;                   % True measurement
     
-    % --- FDI Attack Injection (Steps 20-30) ---
-    if k >= 20 && k <= 30
+    % --- FDI Attack Injection (20-30 seconds) ---
+    if k*dt >= 20 && k*dt <= 30
         attack_signal = [8; -8; 4; -4];  % Stealthy attack aligned with MTD
         y = y + attack_signal; 
     end
@@ -73,9 +73,11 @@ for k = 1:N
     % --- Residual Calculation ---
     r = norm(y_recovered - C*x_hat);  
     
-    % --- Attack Detection with Hysteresis ---
+    % --- Attack Detection ---
     if r > r_threshold
-        flag(max(1,k-2):min(k+2,N)) = 1;  % Flag persists 2 steps pre/post attack
+        flag(k) = 1;  % Set attack flag to 1 if residual exceeds threshold
+    else
+        flag(k) = 0;  % Set attack flag to 0 otherwise
     end
     
     % --- Update System State ---
@@ -85,36 +87,42 @@ for k = 1:N
 end
 
 %% Visualization (Publication-Ready Plots)
-figure('Position', [100 100 800 600], 'Color', 'white');
+figure('Position', [100 100 1200 800], 'Color', 'white');
 
 % 1. Position States (Px and Py)
 subplot(3,1,1);
 plot(time, y_history(1,:), 'b-', 'LineWidth', 1.5); hold on;
 plot(time, y_history(2,:), 'r--', 'LineWidth', 1.5);
-title('Position States (P_x and P_y)', 'FontSize', 12);
-xlabel('Time (s)', 'FontSize', 10);
-ylabel('Position (m)', 'FontSize', 10);
+title('Position States (P_x and P_y)', 'FontSize', 14);
+xlabel('Time (s)', 'FontSize', 12);
+ylabel('Position (m)', 'FontSize', 12);
 legend('P_x', 'P_y', 'Location', 'northeast');
 grid on;
-xlim([0 1]);
+xlim([0 100]);
 
 % 2. Estimation Error (Px)
 subplot(3,1,2);
 plot(time, e_history(1,:), 'b-', 'LineWidth', 1.5);
-title('Estimation Error (P_x)', 'FontSize', 12);
-xlabel('Time (s)', 'FontSize', 10);
-ylabel('Error (m)', 'FontSize', 10);
+title('Estimation Error (P_x)', 'FontSize', 14);
+xlabel('Time (s)', 'FontSize', 12);
+ylabel('Error (m)', 'FontSize', 12);
 grid on;
-xlim([0 1]);
+xlim([0 100]);
 
-% 3. Attack Detection Flag
+% 3. Attack Detection Flag with Shaded Regions
 subplot(3,1,3);
-stem(time, flag, 'r', 'MarkerSize', 8, 'LineWidth', 1.5);
-title('Attack Detection Flag', 'FontSize', 12);
-xlabel('Time (s)', 'FontSize', 10);
-ylabel('Flag', 'FontSize', 10);
+stairs(time, flag, 'r', 'LineWidth', 1.5);
+title('Attack Detection Flag', 'FontSize', 14);
+xlabel('Time (s)', 'FontSize', 12);
+ylabel('Flag', 'FontSize', 12);
 ylim([-0.1 1.5]);
 yticks([0 1]);
 yticklabels({'No Attack', 'Attack'});
 grid on;
-xlim([0 1]);
+xlim([0 100]);
+
+% Highlight attack periods
+hold on;
+attack_periods = (flag == 1);
+area(time, attack_periods, 'FaceColor', 'r', 'FaceAlpha', 0.3, 'EdgeAlpha', 0);
+hold off;
