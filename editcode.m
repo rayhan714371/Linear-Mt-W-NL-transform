@@ -5,7 +5,7 @@
 %   - Sampling time: dt = 0.01  
 %   - Damping parameter: gamma = 0.25  
 %   - State matrix A (4x4):  
-%     [1, 0, (1-0.5*gamma*dt)*dt, 0;  
+%     [1, 0, (1-0.5*dt)*dt, 0;  
 %      0, 1, 0, (1-0.5*gamma*dt)*dt;  
 %      0, 0, 1-gamma*dt, 0;  
 %      0, 0, 0, 1-gamma*dt]  
