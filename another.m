@@ -170,7 +170,6 @@ xlabel('P_x (m)');
 ylabel('P_y (m)');
 title('UAS Trajectory (Red: Attack Period)');
 grid on;
-set(gca, 'YDir', 'reverse');
 xlim([0 14]);
 ylim([-25 -5]);
 
